@@ -25,8 +25,8 @@ namespace JsonBasedLocalizer
         }
         private static bool DoesCultureExist(string cultureName)
         {
-            return CultureInfo.GetCultures(CultureTypes.AllCultures).Any(culture => string.Equals(culture.Name, cultureName,
-    StringComparison.CurrentCultureIgnoreCase));
+            return CultureInfo.GetCultures(CultureTypes.AllCultures)
+                .Any(culture => string.Equals(culture.Name, cultureName, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

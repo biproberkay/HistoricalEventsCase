@@ -4,34 +4,34 @@ using Microsoft.Extensions.Localization;
 namespace JsonBasedLocalizer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("{culture:culture}[controller]")]
     public class DemoController : ControllerBase
     {
 
         private readonly ILogger<DemoController> _logger;
-        private readonly IStringLocalizer<DemoController> _loc;
-        public DemoController(ILogger<DemoController> logger, IStringLocalizer<DemoController> loc)
+        private readonly IStringLocalizer<DemoController> _localizer;
+        public DemoController(ILogger<DemoController> logger, IStringLocalizer<DemoController> localizer)
         {
             _logger = logger;
-            _loc = loc;
+            _localizer = localizer;
         }
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation(_loc["dc_Kategori"]);
-            var message = _loc["dc_Kategori"].ToString();
+            _logger.LogInformation(_localizer["Id"]);
+            var message = _localizer["Id"].ToString();
             return Ok(message);
         }
         [HttpGet("{id}")]
         public IActionResult Get(string name)
         {
-            var message = string.Format(_loc["dc_Olay"], name);
+            var message = string.Format(_localizer["Description"], name);
             return Ok(message);
         }
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var message = _loc.GetAllStrings();
+            var message = _localizer.GetAllStrings();
             return Ok(message);
         }
     }

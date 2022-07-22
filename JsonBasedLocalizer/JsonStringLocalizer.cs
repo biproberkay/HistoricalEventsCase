@@ -21,22 +21,22 @@ namespace JsonBasedLocalizer
             _cache = cache;
         }
 
-        public LocalizedString this[string name]
+        public LocalizedString this[string key]
         {
             get
             {
-                string value = GetString(name);
-                return new LocalizedString(name, value ?? name, value == null);
+                string value = GetString(key);
+                return new LocalizedString(key, value ?? key, value == null);
             }
         }
 
-        public LocalizedString this[string name, params object[] arguments]
+        public LocalizedString this[string key, params object[] arguments]
         {
             get
             {
-                var actualValue = this[name];
+                var actualValue = this[key];
                 return !actualValue.ResourceNotFound
-                    ? new LocalizedString(name, string.Format(actualValue.Value, arguments), false)
+                    ? new LocalizedString(key, string.Format(actualValue.Value, arguments), false)
                     : actualValue;
             }
         }
