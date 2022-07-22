@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
-using System.Linq;
+using System.Net;
 
 namespace JsonBasedLocalizer.Controllers
 {
@@ -25,6 +25,22 @@ namespace JsonBasedLocalizer.Controllers
             _cache = cache;
             _localizer = localizer;
         }
+        private List<HistoricalEventTr> _historicalEvents => GetAllHistoricalEvents();
+
+        private List<HistoricalEventTr> GetAllHistoricalEvents()
+        {
+            List<HistoricalEventTr> json = null;
+            using (WebClient wc = new WebClient())
+            {
+                var jsonStream = wc.OpenRead("https://s3.us-west-2.amazonaws.com/secure.notion-static.com/c86e0795-cfbb-42b9-8164-739f72ebf585/3455dde5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220722T181330Z&X-Amz-Expires=86400&X-Amz-Signature=094323897ec7cc989e4ee559b46b7ee0b86f96a8b9f2b0f55c1bd6761bd1c3d5&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%223455dde5.json%22&x-id=GetObject");
+                var jsonReader = new StreamReader(jsonStream);
+                var textReader = new JsonTextReader(jsonReader);
+                textReader.Read();
+                json = _serializer.Deserialize<List<HistoricalEventTr>>(textReader);
+            }
+            return json;
+        }
+
         /// <summary>
         /// 
         /// Supported cultures are: tr-TR, it-IT 
@@ -45,7 +61,8 @@ namespace JsonBasedLocalizer.Controllers
                 /// Try to navigate to /{{culture}}/
                 /// ";
             _logger.LogInformation(message);
-            return Ok(message);
+            var result = _historicalEvents.Take(10).ToList();
+            return Ok(result);
         }
     }
 }

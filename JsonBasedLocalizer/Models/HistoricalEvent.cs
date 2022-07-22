@@ -4,20 +4,28 @@ namespace JsonBasedLocalizer.Models
 {
     public class HistoricalEvent
     {
-        private readonly IStringLocalizer<HistoricalEvent> _localizer;
-        public HistoricalEvent(IStringLocalizer<HistoricalEvent> localizer)
-        {
-            _localizer = localizer;
-        }
         public int Id { get; set; }
         public DateOnly Date { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
     }
 
-    public class UnNamed
+
+    public class HistoricalEventTr
     {
-        public System.Globalization.CultureInfo CultureInfo { get; set; }
-        public string Resource { get; set; }
+        public int ID { get; set; }
+        public string dc_Zaman { get; set; }
+        public string dc_Kategori { get; set; }
+        public string dc_Olay { get; set; }
     }
+
+
+    public class HistoricalEventIt
+    {
+        public int ID { get; set; }
+        public string dc_Orario { get; set; }
+        public string dc_Categoria { get; set; }
+        public string dc_Evento { get; set; }
+    }
+
 }
