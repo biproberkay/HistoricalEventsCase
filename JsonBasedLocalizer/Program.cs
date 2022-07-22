@@ -3,6 +3,7 @@ using JsonBasedLocalizer.Extensions;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
 using RouteDataRequestCultureProvider = JsonBasedLocalizer.Extensions.RouteDataRequestCultureProvider;
@@ -10,7 +11,7 @@ using RouteDataRequestCultureProvider = JsonBasedLocalizer.Extensions.RouteDataR
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddLocalization();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.Configure<RequestLocalizationOptions>(
     options =>
     {
@@ -28,9 +29,7 @@ builder.Services.Configure<RouteOptions>(options =>
 {
     options.ConstraintMap.Add("culture", typeof(LanguageRouteConstraint));
 });
-//builder.Services.AddSingleton<LocalizationMiddleware>();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -41,12 +40,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-var options = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture(new CultureInfo("tr-TR"))
-};
-//app.UseMiddleware<LocalizationMiddleware>();
-app.UseRequestLocalization(options);
+var localizeOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizeOptions.Value);
+app.UseRouting();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
