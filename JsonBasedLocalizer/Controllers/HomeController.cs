@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace JsonBasedLocalizer.Controllers
 {
+    /// <summary>
+    /// HomeControler
+    /// </summary>
     [ApiController]
     [Route("{culture:culture}/[controller]")]
     public class HomeController : ControllerBase
@@ -22,16 +25,26 @@ namespace JsonBasedLocalizer.Controllers
             _cache = cache;
             _localizer = localizer;
         }
-
+        /// <summary>
+        /// 
+        /// Supported cultures are: tr-TR, it-IT 
+        /// </summary>
+        /// <returns> historical event json data table key names according to selected culture </returns>
         [HttpGet(Name = "HistoricalEvents")]
         public IActionResult Get()
         {
             string message = "keys:";
             foreach (var property in typeof(HistoricalEvent).GetProperties())
             {
-                _logger.LogInformation(_localizer[property.Name]);
                 message += "\n"+property.Name+" : "+ _localizer[_localizer[property.Name]].ToString();
             }
+            message += "\n"+
+                @$" 
+                /// Current culture: {@System.Globalization.CultureInfo.CurrentCulture.DisplayName}
+                /// Current UI culture: {@System.Globalization.CultureInfo.CurrentUICulture.DisplayName}
+                /// Try to navigate to /{{culture}}/
+                /// ";
+            _logger.LogInformation(message);
             return Ok(message);
         }
     }
