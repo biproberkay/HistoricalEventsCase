@@ -2,6 +2,7 @@ using AutoMapper;
 using JsonBasedLocalizer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Globalization;
@@ -17,11 +18,11 @@ namespace JsonBasedLocalizer.Controllers
     public class HomeController : ControllerBase
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IDistributedCache _cache;
+        private readonly IMemoryCache _cache;
         private readonly IStringLocalizer<HomeController> _localizer;
 
         public HomeController(ILogger<HomeController> logger, 
-            IDistributedCache cache,
+            IMemoryCache cache,
             IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
@@ -35,44 +36,49 @@ namespace JsonBasedLocalizer.Controllers
             var trCulture = CultureInfo.GetCultureInfo("tr-TR");
             var itCulture = CultureInfo.GetCultureInfo("it-IT");
             List<HistoricalEvent> historicalEvents = null;
-            if (culture == trCulture)
+            string cacheKey = $"locale_{Thread.CurrentThread.CurrentCulture.Name}_data";
+            if(!_cache.TryGetValue(cacheKey,out historicalEvents))
             {
-                var configuration = new MapperConfiguration(c =>
+                if (culture == trCulture)
                 {
-                    c.ReplaceMemberName("ID", "Id");
-                    c.ReplaceMemberName("dc_Zaman", "Date");
-                    c.ReplaceMemberName("dc_Kategori", "Category");
-                    c.ReplaceMemberName("dc_Olay", "Description");
-                    c.CreateMap<HistoricalEventTr, HistoricalEvent>().ReverseMap();
-                });
-                var _mapper = configuration.CreateMapper();
-                historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsTR());
-            }
-            else if (culture == itCulture)
-            {
-                var configuration = new MapperConfiguration(c =>
+                    var configuration = new MapperConfiguration(c =>
+                    {
+                        c.ReplaceMemberName("ID", "Id");
+                        c.ReplaceMemberName("dc_Zaman", "Date");
+                        c.ReplaceMemberName("dc_Kategori", "Category");
+                        c.ReplaceMemberName("dc_Olay", "Description");
+                        c.CreateMap<HistoricalEventTr, HistoricalEvent>().ReverseMap();
+                    });
+                    var _mapper = configuration.CreateMapper();
+                    historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsTR());
+                }
+                else if (culture == itCulture)
                 {
-                    c.ReplaceMemberName("ID", "Id");
-                    c.ReplaceMemberName("dc_Orario", "Date");
-                    c.ReplaceMemberName("dc_Categoria", "Category");
-                    c.ReplaceMemberName("dc_Evento", "Description");
-                    c.CreateMap<HistoricalEventIt, HistoricalEvent>().ReverseMap();
-                });
-                var _mapper = configuration.CreateMapper();
-                historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsIT());
-            }
-            else
-            {
-                var configuration = new MapperConfiguration(c =>
+                    var configuration = new MapperConfiguration(c =>
+                    {
+                        c.ReplaceMemberName("ID", "Id");
+                        c.ReplaceMemberName("dc_Orario", "Date");
+                        c.ReplaceMemberName("dc_Categoria", "Category");
+                        c.ReplaceMemberName("dc_Evento", "Description");
+                        c.CreateMap<HistoricalEventIt, HistoricalEvent>().ReverseMap();
+                    });
+                    var _mapper = configuration.CreateMapper();
+                    historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsIT());
+                }
+                else
                 {
-                    c.ReplaceMemberName("ID", "Id");
-                    c.ReplaceMemberName("dc_Zaman", "Date");
-                    c.ReplaceMemberName("dc_Kategori", "Category");
-                    c.ReplaceMemberName("dc_Olay", "Description");
-                    c.CreateMap<HistoricalEventTr, HistoricalEvent>().ReverseMap();
-                });
-                var _mapper = configuration.CreateMapper();
-                historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsTR());
+                    var configuration = new MapperConfiguration(c =>
+                    {
+                        c.ReplaceMemberName("ID", "Id");
+                        c.ReplaceMemberName("dc_Zaman", "Date");
+                        c.ReplaceMemberName("dc_Kategori", "Category");
+                        c.ReplaceMemberName("dc_Olay", "Description");
+                        c.CreateMap<HistoricalEventTr, HistoricalEvent>().ReverseMap();
+                    });
+                    var _mapper = configuration.CreateMapper();
+                    historicalEvents = _mapper.Map<List<HistoricalEvent>>(GetHistoricalEventsTR());
+                }
+                _cache.Set(cacheKey, historicalEvents);
             }
 
             return historicalEvents;

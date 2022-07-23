@@ -10,7 +10,7 @@ builder.Services.Configure<RouteOptions>(options =>
     options.ConstraintMap.Add("culture", typeof(LanguageRouteConstraint));
 });
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
