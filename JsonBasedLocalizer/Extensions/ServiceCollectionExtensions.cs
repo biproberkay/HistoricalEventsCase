@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Reflection;
 
-namespace JsonBasedLocalizer.Extensions
+namespace HistoricalEventsCase.Extensions
 {
     internal static class ServiceCollectionExtensions
     {
@@ -15,7 +15,7 @@ namespace JsonBasedLocalizer.Extensions
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "JsonBasedLocalization",
+                    Title = "HistoricalEventsCase",
                     Version = "v1",
                     Description = "An .NET Web API for researching Historical Events",
                     TermsOfService = new Uri("https://example.com/terms"),

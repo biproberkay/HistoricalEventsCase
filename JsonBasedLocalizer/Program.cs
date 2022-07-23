@@ -1,4 +1,4 @@
-using JsonBasedLocalizer.Extensions;
+using HistoricalEventsCase.Extensions;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);

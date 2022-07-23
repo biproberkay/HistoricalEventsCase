@@ -1,5 +1,5 @@
 using AutoMapper;
-using JsonBasedLocalizer.Models;
+using HistoricalEventsCase.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
 
-namespace JsonBasedLocalizer.Controllers
+namespace HistoricalEventsCase.Controllers
 {
     /// <summary>
     /// HomeControler

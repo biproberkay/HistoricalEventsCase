@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Localization;
 
-namespace JsonBasedLocalizer.Extensions
+namespace HistoricalEventsCase.Extensions
 {
     public class RouteDataRequestCultureProvider : RequestCultureProvider
     {

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Globalization;
 
-namespace JsonBasedLocalizer.Extensions
+namespace HistoricalEventsCase.Extensions
 {
     internal static class ApplicationBuilderExtensions
     {

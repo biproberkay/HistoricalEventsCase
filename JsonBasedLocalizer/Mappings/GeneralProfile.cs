@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using JsonBasedLocalizer.Models;
+using HistoricalEventsCase.Models;
 
-namespace JsonBasedLocalizer.Mappings
+namespace HistoricalEventsCase.Mappings
 {
     public class GeneralProfile : Profile
     {

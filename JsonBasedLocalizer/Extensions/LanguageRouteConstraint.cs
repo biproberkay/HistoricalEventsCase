@@ -1,4 +1,4 @@
-﻿namespace JsonBasedLocalizer.Extensions
+﻿namespace HistoricalEventsCase.Extensions
 {
     public class LanguageRouteConstraint : IRouteConstraint
     {

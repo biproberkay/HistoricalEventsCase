@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace JsonBasedLocalizer.Models
+namespace HistoricalEventsCase.Models
 {
     public class HistoricalEvent
     {
