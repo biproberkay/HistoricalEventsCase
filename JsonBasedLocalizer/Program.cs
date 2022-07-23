@@ -1,4 +1,5 @@
 using JsonBasedLocalizer.Extensions;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,8 @@ builder.Services.Configure<RouteOptions>(options =>
 {
     options.ConstraintMap.Add("culture", typeof(LanguageRouteConstraint));
 });
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +30,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Files")),
+    RequestPath = new PathString("/Files")
+});
 
 //app.MapControllers();
 app.MapControllerRoute(
