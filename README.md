@@ -1,4 +1,7 @@
 # HistoricalEventsCase
+> # ⚠️
+> seed user data: username:admin password:12345
+
 ![Animation1](https://user-images.githubusercontent.com/58739068/180646396-2f7733b7-5782-4f4b-9921-89d25e50e994.gif)
 
 # Tasks
