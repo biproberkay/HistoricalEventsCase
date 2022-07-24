@@ -28,6 +28,7 @@ builder.Services.AddCustomAuthentication(token);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCustomSwagger();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
 
 var app = builder.Build();
 

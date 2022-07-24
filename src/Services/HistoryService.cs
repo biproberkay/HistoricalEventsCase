@@ -1,49 +1,31 @@
-using AutoMapper;
-using HistoricalEventsCase.Infrastructure.BasicAuth;
+﻿using AutoMapper;
 using HistoricalEventsCase.Models;
-using HistoricalEventsCase.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
 
-namespace HistoricalEventsCase.Controllers
+namespace HistoricalEventsCase.Services
 {
-    /// <summary>
-    /// HomeControler
-    /// </summary>
-    [BasicAuth] // You can optionally provide a specific realm --> [BasicAuth("my-realm")]
-    [ApiController]
-    [Route("{culture:culture}/[controller]")]
-    public class HomeController : ControllerBase
+    public interface IHistoryService
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IHistoryService _historyService;
-        private readonly IStringLocalizer<HomeController> _localizer;
-
-        public HomeController(ILogger<HomeController> logger,
-            IHistoryService historyService,
-            IStringLocalizer<HomeController> localizer)
+        public IEnumerable<HistoricalEvent> GetHistoricalEvents(CultureInfo culture);
+    }
+    public class HistoryService : IHistoryService
+    {
+        private readonly IMemoryCache _cache;
+        private readonly JsonSerializer _serializer = new JsonSerializer();
+        public HistoryService(IMemoryCache cache)
         {
-            _logger = logger;
-            _historyService = historyService;
-            _localizer = localizer;
+            _cache = cache;
         }
-#if false // DI from HistoryService
-// inject when without HistoryService
-        // private readonly IMemoryCache _cache;
-            // IMemoryCache cache,
-            // _cache = cache;
-        private List<HistoricalEvent> GetHistoricalEvents(CultureInfo culture)
+        public IEnumerable<HistoricalEvent> GetHistoricalEvents(CultureInfo culture)
         {
             var trCulture = CultureInfo.GetCultureInfo("tr-TR");
             var itCulture = CultureInfo.GetCultureInfo("it-IT");
             List<HistoricalEvent> historicalEvents = null;
             string cacheKey = $"locale_{Thread.CurrentThread.CurrentCulture.Name}_data";
-            if (!_cache.TryGetValue(cacheKey, out historicalEvents))
+            if(!_cache.TryGetValue(cacheKey,out historicalEvents))
             {
                 if (culture == trCulture)
                 {
@@ -118,32 +100,5 @@ namespace HistoricalEventsCase.Controllers
             return json;
         }
 
-        private readonly JsonSerializer _serializer = new JsonSerializer();
-        private List<HistoricalEvent> _historicalEvents => GetHistoricalEvents(CultureInfo.CurrentCulture);
-#endif
-        /// <summary>
-        /// 
-        /// Supported cultures are: tr-TR, it-IT 
-        /// </summary>
-        /// <returns> historical event json data table key names according to selected culture </returns>
-        [HttpGet(Name = "HistoricalEvents")]
-        public IEnumerable<HistoricalEvent> Get()
-        {
-            string message = "keys:";
-            foreach (var property in typeof(HistoricalEvent).GetProperties())
-            {
-                message += "\n"+property.Name+" : "+ _localizer[_localizer[property.Name]].ToString();
-            }
-            message += "\n"+
-                @$" 
-                /// Current culture: {@System.Globalization.CultureInfo.CurrentCulture.DisplayName}
-                /// Current UI culture: {@System.Globalization.CultureInfo.CurrentUICulture.DisplayName}
-                /// Try to navigate to /{{culture}}/
-                /// ";
-            _logger.LogInformation(message);
-            List<HistoricalEvent> result = _historyService.GetHistoricalEvents(Thread.CurrentThread.CurrentCulture).ToList();
-            _logger.LogInformation($"we are getting 3-15 event from {result.Count} events");
-            return result.OrderBy(x => Random.Shared.Next(result.Count)).Take(Random.Shared.Next(3, 15));
-        }
     }
 }
