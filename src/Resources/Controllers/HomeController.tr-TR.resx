@@ -129,4 +129,7 @@
   <data name="Id" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="NoSearchResult" xml:space="preserve">
+    <value>Bu arama için sonuç bulunamadı</value>
+  </data>
 </root>
